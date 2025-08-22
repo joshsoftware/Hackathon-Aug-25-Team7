@@ -1,5 +1,4 @@
 import SignInForm from "@/features/signin/components/SignInForm";
-import AuthLayout from "@/shared/hoc/AuthLayout";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -47,11 +46,7 @@ const SignInContainer = () => {
     });
   };
 
-  return (
-    <AuthLayout>
-      <SignInForm signInForm={signInForm} isLoading={isPending} handleSubmit={handleSignIn} />
-    </AuthLayout>
-  );
+  return <SignInForm signInForm={signInForm} isLoading={isPending} handleSubmit={handleSignIn} />;
 };
 
 export default SignInContainer;

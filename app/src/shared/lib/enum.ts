@@ -3,3 +3,7 @@ export enum UserRole {
   RECRUITER = "RECRUITER",
   ADMIN = "ADMIN",
 }
+
+export enum AppLayout {
+  AUTH = "AUTH",
+}
