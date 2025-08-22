@@ -1,5 +1,5 @@
 import { USER_DATA_KEY, ACCESS_TOKEN_KEY } from "@/shared/lib/constants";
-import { type User } from "@/shared/types/auth";
+import { type User } from "@/types/auth";
 
 export const getUserData = () => {
   try {
