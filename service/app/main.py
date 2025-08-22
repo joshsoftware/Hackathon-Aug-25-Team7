@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from .db import connection
 from .models import Base
-from .api import auth
+from .api import auth, jd
 import asyncio
 
 
@@ -9,6 +9,7 @@ app = FastAPI(title="Interview Service")
 
 
 app.include_router(auth.router)
+app.include_router(jd.router)
 
 
 @app.on_event("startup")

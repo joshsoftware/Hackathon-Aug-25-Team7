@@ -21,7 +21,7 @@
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from .models import User
+from .models import User, JobDescription
 
 async def get_user_by_email(db: AsyncSession, email: str):
     q = select(User).where(User.email == email)
@@ -43,3 +43,16 @@ async def create_user(db: AsyncSession, user_create):
     await db.commit()
     await db.refresh(user)
     return user
+
+#JD Table
+async def get_jd_by_id(db: AsyncSession, jd_id: int):
+    result = await db.execute(select(JobDescription).where(JobDescription.id == jd_id))
+    return result.scalars().first()
+
+async def get_jd_count(db: AsyncSession) -> int:
+    result = await db.execute(select(JobDescription))
+    return len(result.scalars().all())
+
+async def get_jds(db: AsyncSession):
+    result = await db.execute(select(JobDescription))
+    return result.scalars().all()

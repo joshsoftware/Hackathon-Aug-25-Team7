@@ -1,8 +1,11 @@
 # app/models.py
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.dialects.postgresql import ENUM as PGEnum
 from sqlalchemy.orm import declarative_base
 import datetime
+from typing import List
+from app.schemas import JDOut
+from pydantic import BaseModel
 
 Base = declarative_base()
 
@@ -25,3 +28,25 @@ class User(Base):
     # If these columns exist in DB, keep them; if not, you can remove them safely.
     created_at = Column("created_at", DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=True)
     updated_at = Column("updated_at", DateTime(timezone=True), default=datetime.datetime.utcnow, nullable=True)
+
+class JobDescription(Base):
+    __tablename__ = "job_descriptions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), nullable=False)
+    location = Column(String(255), nullable=False)
+    opening = Column(Integer, nullable=False)
+    required_skills = Column(Text, nullable=False)
+    preferred_skills = Column(Text, nullable=True)
+    min_experience = Column(Integer, nullable=False)
+    responsibilities = Column(Text, nullable=False)
+
+
+
+class JDListResponse(BaseModel):
+    success: bool
+    status_code: int
+    data: List[JDOut]
+
+    class Config:
+        orm_mode = True

@@ -50,3 +50,32 @@ class LoginResponse(BaseModel):
     token_type: str
     user: UserOut
 
+
+class JDBase(BaseModel):
+    title: str
+    location: str
+    opening: int
+    required_skills: str
+    preferred_skills: Optional[str]
+    min_experience: int
+    responsibilities: str
+
+    class Config:
+        orm_mode = True
+
+class JDOut(BaseModel):
+    id: int
+    title: str
+    location: str
+    opening: int
+    required_skills: str
+    preferred_skills: Optional[str]
+    min_experience: int
+    responsibilities: str
+
+    class Config:
+        orm_mode = True
+
+class JDCount(BaseModel):
+    count: int
+
