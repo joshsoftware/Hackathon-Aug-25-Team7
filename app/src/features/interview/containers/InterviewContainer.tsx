@@ -1,27 +1,12 @@
-import { PipecatClient } from "@pipecat-ai/client-js";
-import { PipecatClientProvider, PipecatClientAudio, PipecatClientVideo } from "@pipecat-ai/client-react";
-import { DailyTransport } from "@pipecat-ai/daily-transport";
+import React from "react";
 import Interview from "../components/Interview";
 
-const InterviewContainer = () => {
-  const pipecatClient = new PipecatClient({
-    transport: new DailyTransport(),
-    enableMic: true,
-  });
-
+const InterviewContainer: React.FC = () => {
   return (
-    <PipecatClientProvider client={pipecatClient}>
+    <div className="max-w-2xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6 text-center">AI Interview</h1>
       <Interview />
-      <PipecatClientVideo
-        participant="bot"
-        fit="cover"
-        mirror
-        onResize={({ aspectRatio, height, width }) => {
-          console.log("Video dimensions changed:", { aspectRatio, height, width });
-        }}
-      />
-      <PipecatClientAudio />
-    </PipecatClientProvider>
+    </div>
   );
 };
 

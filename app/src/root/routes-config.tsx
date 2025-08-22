@@ -25,6 +25,5 @@ export const routes: RouteOptions[] = [
     path: INTERVIEW_PATH,
     element: <InterviewContainer />,
     isProtected: false,
-    layout: AppLayout.AUTH,
   },
 ];
