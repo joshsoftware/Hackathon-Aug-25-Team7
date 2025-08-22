@@ -339,38 +339,3 @@ class InterviewDB:
 
 
 # Simple usage example
-def main():
-    """Example usage"""
-    try:
-        # Initialize database
-        db = InterviewDB()
-        
-        # Initialize interview table (create if doesn't exist)
-        db.initialize_interview_table()
-        
-        # Example: Create interview for existing candidate and JD
-        # interview = Interview(candidate_id=1, jd_id=1)
-        # interview_id = db.create_interview(interview)
-        
-        # Example: Start interview
-        # db.start_interview(interview_id)
-        
-        # Example: Add Q&A during Pipecat session
-        # db.add_qa_to_interview(
-        #     interview_id,
-        #     "What is your experience with Python?",
-        #     "I have 5 years of Python experience...",
-        #     {"correctness": "good", "confidence": "high"}
-        # )
-        
-        # Example: End interview
-        # db.end_interview(interview_id)
-        
-        logger.info("Interview database initialized successfully")
-        
-    except Exception as e:
-        logger.error(f"Error: {e}")
-
-
-if __name__ == "__main__":
-    main()
