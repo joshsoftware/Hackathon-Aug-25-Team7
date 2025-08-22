@@ -6,7 +6,7 @@ from app.db.connection import get_db
 from app.schemas import TokenData
 from app.models import JDListResponse
 
-router = APIRouter(prefix="/jd", tags=["Job Description"])
+router = APIRouter(prefix="/api/jd", tags=["Job Description"])
 
 # --- List all JDs ---
 @router.get("/", response_model=JDListResponse)
