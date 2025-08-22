@@ -43,6 +43,10 @@ class LoginRequest(BaseModel):
     password: str
 
 class LoginResponse(BaseModel):
+    success: bool
+    message: str
+    status_code: int
     access_token: str
     token_type: str
     user: UserOut
+
