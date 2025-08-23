@@ -7,3 +7,10 @@ export enum UserRole {
 export enum AppLayout {
   AUTH = "AUTH",
 }
+
+export enum InterviewStatus {
+  PENDING = "PENDING",
+  SCHEDULED = "SCHEDULED",
+  ONGOING = "ONGOING",
+  COMPLETED = "COMPLETED",
+}

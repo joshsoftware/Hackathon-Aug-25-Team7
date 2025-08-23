@@ -1,44 +1,43 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router";
-import { Separator } from "@/shared/components/ui/separator";
+import { useNavigate, useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
+
 import { Input } from "@/shared/components/ui/input";
+import { Separator } from "@/shared/components/ui/separator";
 import AppHeader from "@/shared/components/layout/AppHeader";
+
 import PageHeader from "../components/PageHeader";
 import CandidateCard from "../components/CandidateCard";
 import CandidateListEmptyState from "../components/CandidateListEmptyState";
-import { mockCandidates, jobTitles } from "../data/mockData";
-import type { Candidate } from "../types/candidate";
+
+import { jobTitles } from "../data/mockData";
+import { getCandidates } from "@/services/candidateList";
 
 const CandidateListPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Extract jobId from the pathname
-  const pathSegments = location.pathname.split('/');
-  const jobId = pathSegments[2] || "jd-001"; // Default to jd-001 if no jobId in path
-  
+const { jd_id } = useParams<{ jd_id: string }>();
+console.log(jd_id)
+const parsedJdId = Number(jd_id);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredCandidates = mockCandidates.filter(candidate =>
-    candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const { data: candidates, isLoading } = useQuery({
+    queryKey: ["candidates", parsedJdId],
+    queryFn: () => getCandidates(parsedJdId),
+    enabled: !!parsedJdId,
+  });
 
-  const handleBack = () => {
-    navigate("/job-descriptions");
-  };
+  const candidatesData=candidates?.data
 
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-  };
+  const handleBack = () => navigate("/job-descriptions");
 
-  const handleSchedule = (candidateId: string) => {
-    // TODO: Implement schedule functionality
+  const handleSearchChange = (value: string) => setSearchTerm(value);
+
+  const handleSchedule = (candidateId: number) => {
     console.log("Schedule clicked for candidate:", candidateId);
   };
 
-  const handleSummary = (candidateId: string) => {
+  const handleSummary = (candidateId: number) => {
     navigate(`/interview-review/${candidateId}`);
   };
 
@@ -47,8 +46,8 @@ const CandidateListPage = () => {
       <AppHeader />
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
         {/* Header */}
-        <PageHeader 
-          jobTitle={jobTitles[jobId] || "Job Position"}
+        <PageHeader
+          jobTitle={jobTitles[String(jd_id)] || "Job Position"}
           onBack={handleBack}
         />
 
@@ -57,7 +56,7 @@ const CandidateListPage = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 pointer-events-none" />
           <Input
             type="text"
-            placeholder="Search candidates by name or skills..."
+            placeholder="Search candidates by name..."
             value={searchTerm}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500"
@@ -66,22 +65,20 @@ const CandidateListPage = () => {
 
         {/* Candidate List */}
         <div className="space-y-0">
-          {filteredCandidates.map((candidate, index) => (
+          {candidatesData?.map((candidate, index) => (
             <div key={candidate.id}>
               <CandidateCard
                 candidate={candidate}
                 onSchedule={handleSchedule}
                 onSummary={handleSummary}
               />
-              {index < filteredCandidates.length - 1 && (
-                <Separator className="my-4" />
-              )}
+              {index < candidatesData.length - 1 && <Separator className="my-4" />}
             </div>
           ))}
         </div>
 
         {/* Empty State */}
-        {filteredCandidates.length === 0 && <CandidateListEmptyState />}
+        {!isLoading && candidatesData?.length === 0 && <CandidateListEmptyState />}
       </div>
     </div>
   );

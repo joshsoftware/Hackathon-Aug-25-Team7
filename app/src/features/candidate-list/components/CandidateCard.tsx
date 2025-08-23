@@ -31,7 +31,7 @@ const CandidateCard = ({ candidate, onSchedule, onSummary }: CandidateCardProps)
   };
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+    return name?.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
   return (
@@ -82,7 +82,7 @@ const CandidateCard = ({ candidate, onSchedule, onSummary }: CandidateCardProps)
 
               {/* Skills */}
               <div className="flex flex-wrap gap-2">
-                {candidate.skills.slice(0, 4).map((skill, index) => (
+                {candidate?.skills.slice(0, 4).map((skill, index) => (
                   <Badge 
                     key={index} 
                     variant="secondary" 
@@ -91,7 +91,7 @@ const CandidateCard = ({ candidate, onSchedule, onSummary }: CandidateCardProps)
                     {skill}
                   </Badge>
                 ))}
-                {candidate.skills.length > 4 && (
+                {candidate?.skills.length > 4 && (
                   <Badge variant="outline" className="text-gray-500">
                     +{candidate.skills.length - 4} more
                   </Badge>
