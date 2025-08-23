@@ -1,7 +1,8 @@
 import { type ReactNode } from "react";
-import { SIGNIN_PATH } from "./routes-constants";
+import { JOB_DESCRIPTION_PATH, SIGNIN_PATH } from "./routes-constants";
 import SignInContainer from "@/features/signin/containers/SignInContainer";
 import { AppLayout } from "@/shared/lib/enum";
+import { JobDescriptionContainer } from "@/features/JobDescription/container/JobDescriptionContainer";
 
 export interface RouteOptions {
   key: string;
@@ -18,5 +19,11 @@ export const routes: RouteOptions[] = [
     element: <SignInContainer />,
     isProtected: false,
     layout: AppLayout.AUTH,
+  },
+  {
+    key: "job-description",
+    path: JOB_DESCRIPTION_PATH,
+    element: <JobDescriptionContainer />,
+    isProtected: false,
   },
 ];
