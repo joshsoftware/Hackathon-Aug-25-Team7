@@ -94,24 +94,7 @@ export const JobDescriptionComponent: FC<Props> = ({
     return (
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-6">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <FileText className="w-8 h-8" />
-              <div>
-                <h1 className="text-2xl font-bold">TalentFlow</h1>
-                <p className="text-blue-200">Interview Management System</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 text-sm">
-              <span>Acme Corporation</span>
-              <Button variant="outline" size="sm" className="text-blue-600 border-white">
-                Schedule
-              </Button>
-            </div>
-          </div>
-        </div>
-
+        <AppHeader />
         {/* Error Content */}
         <div className="max-w-7xl mx-auto p-6">
           <Alert variant="destructive" className="max-w-md mx-auto mt-20">
@@ -129,8 +112,7 @@ export const JobDescriptionComponent: FC<Props> = ({
 
   return (
     <div className="min-h-screen bg-gray-50">
-          <AppHeader />
-      
+      <AppHeader />
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6">
@@ -138,9 +120,7 @@ export const JobDescriptionComponent: FC<Props> = ({
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-3xl font-bold text-gray-900">Job Descriptions</h2>
-            <p className="text-gray-600 mt-1">
-              Manage your active job postings and recruitment pipeline
-            </p>
+            <p className="text-gray-600 mt-1">Manage your active job postings and recruitment pipeline</p>
           </div>
         </div>
 
@@ -191,13 +171,11 @@ export const JobDescriptionComponent: FC<Props> = ({
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <h3 className="text-xl font-semibold text-gray-900 mb-1">{job.title}</h3>
-                      <p className={`text-sm font-medium ${getDepartmentColor(job.department)}`}>
-                        {job.department}
-                      </p>
+                      <p className={`text-sm font-medium ${getDepartmentColor(job.department)}`}>{job.department}</p>
                     </div>
                     <div className="flex flex-col items-end text-sm text-gray-700">
                       <span>
-                       Min. Exp: <span className="font-semibold">{job.min_experience} yrs</span>
+                        Min. Exp: <span className="font-semibold">{job.min_experience} yrs</span>
                       </span>
                       <span>
                         Openings: <span className="font-semibold">{job.opening}</span>
@@ -234,17 +212,12 @@ export const JobDescriptionComponent: FC<Props> = ({
                         .split(",")
                         .slice(0, 5)
                         .map((skill, index) => (
-                          <span
-                            key={index}
-                            className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full"
-                          >
+                          <span key={index} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
                             {skill.trim()}
                           </span>
                         ))}
                       {job.required_skills.split(",").length > 5 && (
-                        <Badge className="text-xs">
-                          +{job.required_skills.split(",").length - 5} more
-                        </Badge>
+                        <Badge className="text-xs">+{job.required_skills.split(",").length - 5} more</Badge>
                       )}
                     </div>
                   </div>
@@ -258,17 +231,12 @@ export const JobDescriptionComponent: FC<Props> = ({
                           .split(",")
                           .slice(0, 5)
                           .map((skill, index) => (
-                            <span
-                              key={index}
-                              className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full"
-                            >
+                            <span key={index} className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
                               {skill.trim()}
                             </span>
                           ))}
                         {job.preferred_skills.split(",").length > 5 && (
-                          <Badge className="text-xs">
-                            +{job.preferred_skills.split(",").length - 5} more
-                          </Badge>
+                          <Badge className="text-xs">+{job.preferred_skills.split(",").length - 5} more</Badge>
                         )}
                       </div>
                     </div>
