@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { Separator } from "@/shared/components/ui/separator";
 import { Search } from "lucide-react";
@@ -7,23 +7,63 @@ import AppHeader from "@/shared/components/layout/AppHeader";
 import PageHeader from "../components/PageHeader";
 import CandidateCard from "../components/CandidateCard";
 import CandidateListEmptyState from "../components/CandidateListEmptyState";
-import { mockCandidates, jobTitles } from "../data/mockData";
+import { jobTitles } from "../data/mockData";
 import type { Candidate } from "../types/candidate";
+import { fetchCandidatesByJob, type CandidateDTO } from "@/services/candidates";
 
 const CandidateListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Extract jobId from the pathname
+  // Extract jobId from the pathname (/candidates/:jobId)
   const pathSegments = location.pathname.split('/');
-  const jobId = pathSegments[2] || "jd-001"; // Default to jd-001 if no jobId in path
-  
+  const jobId = pathSegments[2] || "";
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [apiCandidates, setApiCandidates] = useState<CandidateDTO[]>([]);
 
-  const filteredCandidates = mockCandidates.filter(candidate =>
-    candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  useEffect(() => {
+    const load = async () => {
+      if (!jobId) return;
+      setLoading(true);
+      setError(null);
+      try {
+        const resp = await fetchCandidatesByJob(jobId);
+        setApiCandidates(resp.data || []);
+      } catch (e: any) {
+        setError(e?.message || "Failed to load candidates");
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [jobId]);
+
+  // Map API DTO to UI Candidate model
+  const candidates: Candidate[] = useMemo(() => {
+    return apiCandidates.map((c) => ({
+      id: String(c.id),
+      name: c.user?.full_name || c.user?.email || `Candidate ${c.id}`,
+      email: c.user?.email || "",
+      phone: "",
+      location: "",
+      experience: "",
+      education: "",
+      skills: [],
+      applicationDate: c.applied_at,
+      interviewStatus: (c.interview_status as Candidate["interviewStatus"]) || "pending",
+      summary: "",
+      avatar: undefined,
+    }));
+  }, [apiCandidates]);
+
+  const filteredCandidates = useMemo(() => {
+    return candidates.filter(candidate =>
+      candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  }, [candidates, searchTerm]);
 
   const handleBack = () => {
     navigate("/job-descriptions");
@@ -64,6 +104,14 @@ const CandidateListPage = () => {
           />
         </div>
 
+        {/* Loading / Error */}
+        {loading && (
+          <div className="text-center text-gray-500">Loading candidates…</div>
+        )}
+        {error && (
+          <div className="text-center text-red-600">{error}</div>
+        )}
+
         {/* Candidate List */}
         <div className="space-y-0">
           {filteredCandidates.map((candidate, index) => (
@@ -81,7 +129,7 @@ const CandidateListPage = () => {
         </div>
 
         {/* Empty State */}
-        {filteredCandidates.length === 0 && <CandidateListEmptyState />}
+        {!loading && filteredCandidates.length === 0 && <CandidateListEmptyState />}
       </div>
     </div>
   );

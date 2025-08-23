@@ -1,7 +1,13 @@
-import { api } from "@/api/axios-config"
-import type { Job } from "@/types/jobDescription"
+import { api } from "@/api/axios-config";
+import type { Job } from "@/types/jobDescription";
 
-//job description api
-export const jobDescription = async(): Promise<Axios.AxiosXHR<Job[]>> => {
-    return await api.get('/jd')
+export interface ApiResponse<T> {
+    success: boolean;
+    status_code: number;
+    data: T;
 }
+
+// job description api
+export const jobDescription = async () => {
+    return await api.get<ApiResponse<Job[]>>("/jd");
+};

@@ -1,4 +1,5 @@
 import { useState, type FC } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { jobDescription } from "@/services/jobDescription";
@@ -14,6 +15,7 @@ export interface JobWithStats extends Job {
 }
 
 export const JobDescriptionContainer: FC = () => {
+  const navigate = useNavigate();
   // Search & filter state
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
@@ -54,20 +56,17 @@ export const JobDescriptionContainer: FC = () => {
   };
 
   // React Query hook
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery<JobWithStats[]>({
     queryKey: ["jobDescriptions"],
     queryFn: async () => {
       const response = await jobDescription();
       return response.data.data.map(enhanceJobData);
     },
-    onError: () => {
-      toast.error("Failed to load job descriptions");
-    },
   });
 
   // Filtered jobs
   const filteredJobs =
-    data?.filter((job) => {
+    data?.filter((job: JobWithStats) => {
       const matchesSearch =
         job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         job.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -82,8 +81,9 @@ export const JobDescriptionContainer: FC = () => {
   // Handlers
   const handleSearch = (query: string) => setSearchQuery(query);
   const handleFilter = (filter: string) => setSelectedFilter(filter);
-  const handleViewCandidates = (jobId: number) =>
-    toast.info(`Opening candidates for job ID: ${jobId}`);
+  const handleViewCandidates = (jobId: number) => {
+    navigate(`/candidates/${jobId}`);
+  };
   const handleNewJobPosting = () => toast.info("Opening new job posting form");
 
   return (
