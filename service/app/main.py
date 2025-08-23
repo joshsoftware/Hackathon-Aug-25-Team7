@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from .db import connection
 from .models import Base
@@ -7,6 +8,14 @@ import asyncio
 
 app = FastAPI(title="Interview Service")
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins (replace with your frontend URL in production)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 app.include_router(auth.router)
 app.include_router(jd.router)
