@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { JOB_DESCRIPTION_PATH, SIGNIN_PATH } from "./routes-constants";
 import SignInContainer from "@/features/signin/containers/SignInContainer";
 import { AppLayout } from "@/shared/lib/enum";
-import { JobDescriptionContainer } from "@/features/jobDescription/container/JobDescriptionContainer";
+import { JobDescriptionContainer } from "@/features/JobDescription/container/JobDescriptionContainer";
 
 export interface RouteOptions {
   key: string;
