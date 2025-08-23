@@ -14,9 +14,9 @@ import { fetchCandidatesByJob, type CandidateDTO } from "@/services/candidates";
 const CandidateListPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Extract jobId from the pathname (/candidates/:jobId)
-  const pathSegments = location.pathname.split('/');
+  const pathSegments = location.pathname.split("/");
   const jobId = pathSegments[2] || "";
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
@@ -59,9 +59,10 @@ const CandidateListPage = () => {
   }, [apiCandidates]);
 
   const filteredCandidates = useMemo(() => {
-    return candidates.filter(candidate =>
-      candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      candidate.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+    return candidates.filter(
+      (candidate) =>
+        candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        candidate.skills.some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [candidates, searchTerm]);
 
@@ -86,11 +87,11 @@ const CandidateListPage = () => {
     <div className="min-h-screen bg-gray-50">
       <AppHeader />
       <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        {/* Header */}
+        {/* Header
         <PageHeader 
           jobTitle={jobTitles[jobId] || "Job Position"}
           onBack={handleBack}
-        />
+        /> */}
 
         {/* Search */}
         <div className="relative">
@@ -105,25 +106,15 @@ const CandidateListPage = () => {
         </div>
 
         {/* Loading / Error */}
-        {loading && (
-          <div className="text-center text-gray-500">Loading candidates…</div>
-        )}
-        {error && (
-          <div className="text-center text-red-600">{error}</div>
-        )}
+        {loading && <div className="text-center text-gray-500">Loading candidates…</div>}
+        {error && <div className="text-center text-red-600">{error}</div>}
 
         {/* Candidate List */}
         <div className="space-y-0">
           {filteredCandidates.map((candidate, index) => (
             <div key={candidate.id}>
-              <CandidateCard
-                candidate={candidate}
-                onSchedule={handleSchedule}
-                onSummary={handleSummary}
-              />
-              {index < filteredCandidates.length - 1 && (
-                <Separator className="my-4" />
-              )}
+              <CandidateCard candidate={candidate} onSchedule={handleSchedule} onSummary={handleSummary} />
+              {index < filteredCandidates.length - 1 && <Separator className="my-4" />}
             </div>
           ))}
         </div>
