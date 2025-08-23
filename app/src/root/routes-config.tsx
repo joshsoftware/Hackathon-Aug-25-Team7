@@ -1,8 +1,6 @@
 import { type ReactNode } from "react";
-import { JOB_DESCRIPTION_PATH, SIGNIN_PATH } from "./routes-constants";
-import SignInContainer from "@/features/signin/containers/SignInContainer";
-import { AppLayout } from "@/shared/lib/enum";
-import { JobDescriptionContainer } from "@/features/JobDescription/container/JobDescriptionContainer";
+import { CANDIDATE_LIST_PATH } from "./routes-constants";
+import CandidateListPage from "@/features/candidate-list/containers/CandidateListPage";
 
 export interface RouteOptions {
   key: string;
@@ -14,16 +12,24 @@ export interface RouteOptions {
 
 export const routes: RouteOptions[] = [
   {
-    key: "sign-in",
-    path: SIGNIN_PATH,
-    element: <SignInContainer />,
+    key: "index",
+    path: "/",
+    element: <div className="p-8 text-center"><h1 className="text-2xl font-bold">Welcome to the App</h1><p className="mt-4">Navigate to <a href="/candidates/jd-001" className="text-blue-600 hover:underline">/candidates/jd-001</a> to view the candidate list.</p></div>,
     isProtected: false,
-    layout: AppLayout.AUTH,
+    includeLayout: true,
   },
   {
-    key: "job-description",
-    path: JOB_DESCRIPTION_PATH,
-    element: <JobDescriptionContainer />,
+    key: "candidate-list",
+    path: CANDIDATE_LIST_PATH,
+    element: <CandidateListPage />,
+    isProtected: false, // Temporarily disable auth to test routing
+    includeLayout: true,
+  },
+  {
+    key: "test-candidate",
+    path: "/candidates/test",
+    element: <div className="p-8 text-center"><h1 className="text-2xl font-bold">Test Candidate Route</h1><p className="mt-4">This is a test route to verify routing works.</p></div>,
     isProtected: false,
+    includeLayout: true,
   },
 ];
