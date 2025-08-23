@@ -1,6 +1,8 @@
 import { type ReactNode } from "react";
-import { CANDIDATE_LIST_PATH } from "./routes-constants";
+import { CANDIDATE_LIST_PATH, INTERVIEW_REVIEW_PATH } from "./routes-constants";
 import CandidateListPage from "@/features/candidate-list/containers/CandidateListPage";
+import InterviewReviewPage from "@/features/interview-summary/containers/InterviewReviewPage";
+import AdminDashboard from "@/features/company-dashboard/containers/AdminDashboard";
 
 export interface RouteOptions {
   key: string;
@@ -12,9 +14,9 @@ export interface RouteOptions {
 
 export const routes: RouteOptions[] = [
   {
-    key: "index",
+    key: "admin-dashboard",
     path: "/",
-    element: <div className="p-8 text-center"><h1 className="text-2xl font-bold">Welcome to the App</h1><p className="mt-4">Navigate to <a href="/candidates/jd-001" className="text-blue-600 hover:underline">/candidates/jd-001</a> to view the candidate list.</p></div>,
+    element: <AdminDashboard />,
     isProtected: false,
     includeLayout: true,
   },
@@ -22,6 +24,13 @@ export const routes: RouteOptions[] = [
     key: "candidate-list",
     path: CANDIDATE_LIST_PATH,
     element: <CandidateListPage />,
+    isProtected: false, // Temporarily disable auth to test routing
+    includeLayout: true,
+  },
+  {
+    key: "interview-review",
+    path: INTERVIEW_REVIEW_PATH,
+    element: <InterviewReviewPage />,
     isProtected: false, // Temporarily disable auth to test routing
     includeLayout: true,
   },
