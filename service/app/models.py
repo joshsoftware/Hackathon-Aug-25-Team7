@@ -1,11 +1,16 @@
-# app/models.py
+import enum
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.dialects.postgresql import ENUM as PGEnum
 from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Enum
+from sqlalchemy.dialects.postgresql import ENUM as PGEnum
+from sqlalchemy.orm import declarative_base, relationship
 import datetime
 from typing import List
 from app.schemas import JDOut
 from pydantic import BaseModel
+
+
 
 Base = declarative_base()
 
@@ -50,3 +55,44 @@ class JDListResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class Candidate(Base):
+    __tablename__ = "candidates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    jd_id = Column(Integer, ForeignKey("job_descriptions.id", ondelete="CASCADE"), nullable=False)  
+    applied_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    # relationships (optional for easier querying)
+    user = relationship("User", backref="candidates")
+    jd = relationship("JobDescription", backref="candidates")
+    interview = relationship("Interview", back_populates="candidate", uselist=False)
+
+# Enum for interview status
+class InterviewStatus(str, enum.Enum):
+    scheduled = "scheduled"
+    completed = "completed"
+    ongoing = "ongoing"
+    pending = "pending"
+
+
+class Interview(Base):
+    __tablename__ = "interviews"
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(Integer, ForeignKey("candidates.id", ondelete="CASCADE"))
+    jd_id = Column(Integer, ForeignKey("job_descriptions.id", ondelete="CASCADE"))
+    status = Column(
+        Enum(InterviewStatus, name="interview_status", native_enum=False, create_constraint=False),
+        nullable=False,
+        default=InterviewStatus.pending
+    )
+
+    start_time = Column(DateTime(timezone=True), nullable=True)
+    end_time = Column(DateTime(timezone=True), nullable=True)
+    interview_qa = Column(Text, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    candidate = relationship("Candidate", back_populates="interview")
+

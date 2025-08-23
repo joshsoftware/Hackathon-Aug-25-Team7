@@ -2,7 +2,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from .db import connection
 from .models import Base
-from .api import auth, jd
+from .api import auth, jd, candidate
 import asyncio
 
 
@@ -19,7 +19,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(jd.router)
-
+app.include_router(candidate.router)
 
 @app.on_event("startup")
 async def on_startup():
