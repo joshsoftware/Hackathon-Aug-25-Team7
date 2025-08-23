@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-
-interface SDPOffer {
-  offer: string;
-}
+import { api } from "@/api/axios-config";
 
 interface InterviewState {
   isConnected: boolean;
   isCallActive: boolean;
   connectionState: RTCPeerConnectionState;
+}
+
+interface WebRTCResponse {
+  sdp: string;
+  type: string;
 }
 
 const VirtualInterview: React.FC = () => {
@@ -22,11 +24,6 @@ const VirtualInterview: React.FC = () => {
   const localAudioRef = useRef<HTMLAudioElement>(null);
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
-
-  const sdpOffer: SDPOffer = {
-    offer:
-      "v=0\no=- 1234567890 1 IN IP4 127.0.0.1\ns=-\nt=0 0\na=group:BUNDLE audio\na=msid-semantic: WMS\nm=audio 9 UDP/TLS/RTP/SAVPF 111\nc=IN IP4 0.0.0.0\na=rtcp:9 IN IP4 0.0.0.0\na=ice-ufrag:test\na=ice-pwd:test123\na=fingerprint:sha-256 00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00\na=setup:actpass\na=mid:audio\na=sendrecv\na=rtcp-mux\na=rtpmap:111 opus/48000/2\na=fmtp:111 minptime=10;useinbandfec=1\na=ssrc:1234567890 cname:test",
-  };
 
   const initializePeerConnection = (): RTCPeerConnection => {
     const pc = new RTCPeerConnection({
@@ -49,7 +46,8 @@ const VirtualInterview: React.FC = () => {
 
     pc.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log("ICE candidate:", event.candidate);
+        console.log("ICE candidate generated:", event.candidate);
+        // In a production app, you would send this to the server
       }
     };
 
@@ -73,6 +71,19 @@ const VirtualInterview: React.FC = () => {
     }
   };
 
+  const connectToServer = async (offer: RTCSessionDescriptionInit): Promise<WebRTCResponse> => {
+    try {
+      const response = await api.post('/connect', {
+        offer: offer.sdp,
+        type: offer.type
+      });
+      
+      return response.data;
+    } catch (err) {
+      throw new Error(`Failed to connect to server: ${(err as Error).message}`);
+    }
+  };
+
   const handleClick = async (): Promise<void> => {
     try {
       setError("");
@@ -84,17 +95,41 @@ const VirtualInterview: React.FC = () => {
       localStream.getTracks().forEach((track) => {
         pc.addTrack(track, localStream);
       });
-
-      await pc.setRemoteDescription({
-        type: "offer",
-        sdp: sdpOffer.offer,
+      
+      // Create a real offer
+      const offer = await pc.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: false,
       });
-
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-
-      console.log("Generated SDP Answer:", answer.sdp);
-
+      
+      await pc.setLocalDescription(offer);
+      
+      console.log("Generated SDP Offer");
+      
+      // Wait for ICE gathering to complete
+      await new Promise<void>((resolve) => {
+        if (pc.iceGatheringState === 'complete') {
+          resolve();
+        } else {
+          const checkState = () => {
+            if (pc.iceGatheringState === 'complete') {
+              pc.removeEventListener('icegatheringstatechange', checkState);
+              resolve();
+            }
+          };
+          pc.addEventListener('icegatheringstatechange', checkState);
+        }
+      });
+      
+      // Send the offer to the server and get an answer back
+      const answer = await connectToServer(pc.localDescription as RTCSessionDescriptionInit);
+      
+      // Apply the answer from the server
+      await pc.setRemoteDescription({
+        type: 'answer',
+        sdp: answer.sdp
+      });
+      
       setState((prev) => ({ ...prev, isCallActive: true }));
     } catch (err) {
       const errorMessage = `Connection failed: ${(err as Error).message}`;

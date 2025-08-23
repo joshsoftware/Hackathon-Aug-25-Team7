@@ -25,6 +25,7 @@ import os
 
 from dotenv import load_dotenv
 from loguru import logger
+from interview_prompts import get_interview_prompt
 
 print("🚀 Starting Pipecat bot...")
 print("⏳ Loading AI models (30-40 seconds first run, <2 seconds after)\n")
@@ -73,10 +74,9 @@ async def run_bot(transport: BaseTransport, runner_args: RunnerArguments):
         )
     )
 
-    system_prompt = "You are a friendly AI assistant. Respond naturally and keep your answers conversational."
+    system_prompt = get_interview_prompt("software_engineer")
     context = AnthropicLLMContext(messages=[], system=system_prompt)
     context_aggregator = llm.create_context_aggregator(context)
-
     rtvi = RTVIProcessor(config=RTVIConfig(config=[]))
 
     pipeline = Pipeline(

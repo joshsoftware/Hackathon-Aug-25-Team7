@@ -1,4 +1,4 @@
-import { createBrowserRouter, type RouteObject, RouterProvider } from "react-router";
+import { createBrowserRouter, type RouteObject, RouterProvider } from "react-router-dom";
 import { type RouteOptions, routes } from "@/root/routes-config";
 import WithAuth from "@/shared/hoc/WithAuth";
 import { AppLayout } from "@/shared/lib/enum";
@@ -24,13 +24,20 @@ const getBrowserRouter = (routes: RouteOptions[]) => {
     return routerObject;
   });
 
+  // Add a root route that redirects to the interview page
+  routerObjects.push({
+    path: '/',
+    element: routes.find(r => r.key === 'interview')?.element
+  });
+
   const router = createBrowserRouter(routerObjects);
   return router;
 };
 
 const Router = () => {
   const router = getBrowserRouter(routes);
-
+  console.log("Router initialized with routes:", routes);
+  
   return <RouterProvider router={router} />;
 };
 
