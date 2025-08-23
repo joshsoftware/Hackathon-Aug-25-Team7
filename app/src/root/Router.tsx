@@ -24,6 +24,19 @@ const getBrowserRouter = (routes: RouteOptions[]) => {
     return routerObject;
   });
 
+  // Add a catch-all route for 404 errors
+  routerObjects.push({
+    id: "not-found",
+    path: "*",
+    element: (
+      <div className="p-8 text-center">
+        <h1 className="text-2xl font-bold text-red-600">404 - Page Not Found</h1>
+        <p className="mt-4 text-gray-600">The page you're looking for doesn't exist.</p>
+        <a href="/" className="mt-4 inline-block text-blue-600 hover:underline">Go back home</a>
+      </div>
+    ),
+  });
+
   const router = createBrowserRouter(routerObjects);
   return router;
 };

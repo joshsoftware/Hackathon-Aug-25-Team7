@@ -15,14 +15,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Alert, AlertDescription } from "@/shared/components/ui/alert";
-import { Input } from "@/shared/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@radix-ui/react-select";
 import { Card, CardContent } from "@/shared/components/ui/card";
 
 interface Job {
@@ -109,11 +101,7 @@ export const JobDescriptionComponent: FC<Props> = ({
             </div>
             <div className="flex items-center gap-4 text-sm">
               <span>Acme Corporation</span>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-blue-600 border-white"
-              >
+              <Button variant="outline" size="sm" className="text-blue-600 border-white">
                 Schedule
               </Button>
             </div>
@@ -149,11 +137,7 @@ export const JobDescriptionComponent: FC<Props> = ({
           </div>
           <div className="flex items-center gap-4 text-sm">
             <span>Acme Corporation</span>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-blue-600 border-white"
-            >
+            <Button variant="outline" size="sm" className="text-blue-600 border-white">
               Schedule
             </Button>
           </div>
@@ -165,14 +149,11 @@ export const JobDescriptionComponent: FC<Props> = ({
         {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">
-              Job Descriptions
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900">Job Descriptions</h2>
             <p className="text-gray-600 mt-1">
               Manage your active job postings and recruitment pipeline
             </p>
           </div>
-         
         </div>
 
         {isLoading ? (
@@ -200,19 +181,14 @@ export const JobDescriptionComponent: FC<Props> = ({
         ) : jobs.length === 0 ? (
           <div className="text-center py-12">
             <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No job postings found
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No job postings found</h3>
             <p className="text-gray-600 mb-4">
               {searchQuery || selectedFilter !== "all"
                 ? "Try adjusting your search or filter criteria"
                 : "Get started by creating your first job posting"}
             </p>
             {!searchQuery && selectedFilter === "all" && (
-              <Button
-                onClick={onNewJobPosting}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
+              <Button onClick={onNewJobPosting} className="bg-blue-600 hover:bg-blue-700">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Job Posting
               </Button>
@@ -223,23 +199,22 @@ export const JobDescriptionComponent: FC<Props> = ({
             {jobs.map((job) => (
               <Card key={job.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
-                  {/* Header */}
+                  {/* Header: Title, Department, Exp & Openings */}
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                        {job.title}
-                      </h3>
-                      <p
-                        className={`text-sm font-medium ${getDepartmentColor(
-                          job.department
-                        )}`}
-                      >
+                      <h3 className="text-xl font-semibold text-gray-900 mb-1">{job.title}</h3>
+                      <p className={`text-sm font-medium ${getDepartmentColor(job.department)}`}>
                         {job.department}
                       </p>
                     </div>
-                    <Badge className={getStatusColor(job.status)}>
-                      {job.status}
-                    </Badge>
+                    <div className="flex flex-col items-end text-sm text-gray-700">
+                      <span>
+                       Min. Exp: <span className="font-semibold">{job.min_experience} yrs</span>
+                      </span>
+                      <span>
+                        Openings: <span className="font-semibold">{job.opening}</span>
+                      </span>
+                    </div>
                   </div>
 
                   {/* Location and Salary */}
@@ -256,34 +231,60 @@ export const JobDescriptionComponent: FC<Props> = ({
                     )}
                   </div>
 
-                  {/* Job Description */}
+                  {/* Responsibilities */}
                   <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                     {job.responsibilities.length > 100
                       ? `${job.responsibilities.substring(0, 100)}...`
                       : job.responsibilities}
                   </p>
 
-                  {/* Skills */}
-                  <div className="mb-4">
-                    <p className="text-xs text-gray-500 mb-2">
-                      Required Skills:
-                    </p>
-                    <div className="flex flex-wrap gap-1">
+                  {/* Required Skills */}
+                  <div className="mb-2">
+                    <p className="text-xs font-medium text-gray-500 mb-1">Required Skills:</p>
+                    <div className="flex flex-wrap gap-2">
                       {job.required_skills
                         .split(",")
-                        .slice(0, 3)
+                        .slice(0, 5)
                         .map((skill, index) => (
-                          <Badge key={index} className="text-xs">
+                          <span
+                            key={index}
+                            className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full"
+                          >
                             {skill.trim()}
-                          </Badge>
+                          </span>
                         ))}
-                      {job.required_skills.split(",").length > 3 && (
+                      {job.required_skills.split(",").length > 5 && (
                         <Badge className="text-xs">
-                          +{job.required_skills.split(",").length - 3} more
+                          +{job.required_skills.split(",").length - 5} more
                         </Badge>
                       )}
                     </div>
                   </div>
+
+                  {/* Preferred Skills */}
+                  {job.preferred_skills && (
+                    <div className="mb-4">
+                      <p className="text-xs font-medium text-gray-500 mb-1">Preferred Skills:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {job.preferred_skills
+                          .split(",")
+                          .slice(0, 5)
+                          .map((skill, index) => (
+                            <span
+                              key={index}
+                              className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full"
+                            >
+                              {skill.trim()}
+                            </span>
+                          ))}
+                        {job.preferred_skills.split(",").length > 5 && (
+                          <Badge className="text-xs">
+                            +{job.preferred_skills.split(",").length - 5} more
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Stats and Actions */}
                   <div className="flex items-center justify-between pt-4 border-t">

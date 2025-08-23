@@ -58,7 +58,7 @@ export const JobDescriptionContainer: FC = () => {
     queryKey: ["jobDescriptions"],
     queryFn: async () => {
       const response = await jobDescription();
-      return response.data.map(enhanceJobData);
+      return response.data.data.map(enhanceJobData);
     },
     onError: () => {
       toast.error("Failed to load job descriptions");
@@ -66,17 +66,18 @@ export const JobDescriptionContainer: FC = () => {
   });
 
   // Filtered jobs
-  const filteredJobs = data?.filter((job) => {
-    const matchesSearch =
-      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.location.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredJobs =
+    data?.filter((job) => {
+      const matchesSearch =
+        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.location.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesFilter =
-      selectedFilter === "all" ? true : job.status === selectedFilter;
+      const matchesFilter =
+        selectedFilter === "all" ? true : job.status === selectedFilter;
 
-    return matchesSearch && matchesFilter;
-  }) ?? [];
+      return matchesSearch && matchesFilter;
+    }) ?? [];
 
   // Handlers
   const handleSearch = (query: string) => setSearchQuery(query);
