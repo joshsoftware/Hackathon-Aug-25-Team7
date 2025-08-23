@@ -16,6 +16,8 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { Alert, AlertDescription } from "@/shared/components/ui/alert";
 import { Card, CardContent } from "@/shared/components/ui/card";
+import { AppHeader } from "@/shared/components/layout";
+import { useNavigate } from "react-router";
 
 interface Job {
   id: number;
@@ -71,6 +73,8 @@ export const JobDescriptionComponent: FC<Props> = ({
     }
   };
 
+  const navigate = useNavigate();
+
   const getDepartmentColor = (department: string) => {
     switch (department) {
       case "Engineering":
@@ -125,24 +129,8 @@ export const JobDescriptionComponent: FC<Props> = ({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-blue-600 text-white p-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <FileText className="w-8 h-8" />
-            <div>
-              <h1 className="text-2xl font-bold">TalentFlow</h1>
-              <p className="text-blue-200">Interview Management System</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-sm">
-            <span>Acme Corporation</span>
-            <Button variant="outline" size="sm" className="text-blue-600 border-white">
-              Schedule
-            </Button>
-          </div>
-        </div>
-      </div>
+          <AppHeader />
+      
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6">
