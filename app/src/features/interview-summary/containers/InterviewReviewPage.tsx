@@ -21,9 +21,7 @@ const InterviewReviewPage = () => {
   const { candidateId } = useParams<{ candidateId: string }>();
   const [interviewData] = useState<InterviewData>(mockInterviewData);
 
-  const handleBack = () => {
-    navigate(-1);
-  };
+const handleBack = () => navigate("/jobdescription");
 
   return (
     <div className="min-h-screen bg-gray-50">

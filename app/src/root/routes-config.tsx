@@ -1,11 +1,13 @@
 import { type ReactNode } from "react";
-import { SIGNIN_PATH, INTERVIEW_PATH, CANDIDATE_LIST_PATH, INTERVIEW_REVIEW_PATH } from "./routes-constants";
+import { SIGNIN_PATH, INTERVIEW_PATH, CANDIDATE_LIST_PATH, INTERVIEW_REVIEW_PATH, JOB_DESCRIPTION_PATH } from "./routes-constants";
 import SignInContainer from "@/features/signin/containers/SignInContainer";
 import { AppLayout } from "@/shared/lib/enum";
 import InterviewContainer from "@/features/interview/containers/InterviewContainer";
 import CandidateListPage from "@/features/candidate-list/containers/CandidateListPage";
 import InterviewReviewPage from "@/features/interview-summary/containers/InterviewReviewPage";
 import AdminDashboard from "@/features/company-dashboard/containers/AdminDashboard";
+import { JobDescriptionContainer } from "@/features/JobDescription/container/JobDescriptionContainer";
+
 
 export interface RouteOptions {
   key: string;
@@ -46,6 +48,12 @@ export const routes: RouteOptions[] = [
     path: INTERVIEW_REVIEW_PATH,
     element: <InterviewReviewPage />,
     isProtected: false, // Temporarily disable auth to test routing
+  },
+  {
+    key: "job-description",
+    path: JOB_DESCRIPTION_PATH,
+    element: <JobDescriptionContainer />, 
+    isProtected: false,
   },
   {
     key: "test-candidate",
