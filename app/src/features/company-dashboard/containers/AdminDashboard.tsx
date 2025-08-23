@@ -10,7 +10,7 @@ import { mockStats, mockRecentActivities, mockSystemOverview } from "../data/moc
 
 const AdminDashboard = () => {
   const handleViewAllJobs = () => {
-    window.location.href = "/candidates";
+    window.location.href = "/jobdescription";
   };
 
   const handleViewAllActivities = () => {
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
   };
 
   const handleGoToJobDescriptions = () => {
-    window.location.href = "/candidates";
+    window.location.href = "/jobdescription";
   };
 
   return (
