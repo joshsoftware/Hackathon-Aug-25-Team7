@@ -21,7 +21,9 @@
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from .models import User, JobDescription
+from .models import User, JobDescription, Candidate
+from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload  # Add this import at the top of the file
 
 async def get_user_by_email(db: AsyncSession, email: str):
     q = select(User).where(User.email == email)
@@ -55,4 +57,20 @@ async def get_jd_count(db: AsyncSession) -> int:
 
 async def get_jds(db: AsyncSession):
     result = await db.execute(select(JobDescription))
+    return result.scalars().all()
+
+async def get_candidates(db: AsyncSession):
+    result = await db.execute(
+        select(Candidate).options(selectinload(Candidate.user))
+    )
+    return result.scalars().all()
+
+
+# --- Get candidates by JD ---
+async def get_candidates_by_jd(db: AsyncSession, jd_id: int):
+    result = await db.execute(
+        select(Candidate)
+        .where(Candidate.jd_id == jd_id)
+        .options(selectinload(Candidate.user))
+    )
     return result.scalars().all()

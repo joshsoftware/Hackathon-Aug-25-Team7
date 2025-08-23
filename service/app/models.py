@@ -2,6 +2,9 @@
 from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.dialects.postgresql import ENUM as PGEnum
 from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy.dialects.postgresql import ENUM as PGEnum
+from sqlalchemy.orm import declarative_base, relationship
 import datetime
 from typing import List
 from app.schemas import JDOut
@@ -50,3 +53,16 @@ class JDListResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+class Candidate(Base):
+    __tablename__ = "candidates"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    jd_id = Column(Integer, ForeignKey("job_descriptions.id", ondelete="CASCADE"), nullable=False)  
+    applied_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+    # relationships (optional for easier querying)
+    user = relationship("User", backref="candidates")
+    jd = relationship("JobDescription", backref="candidates")
+

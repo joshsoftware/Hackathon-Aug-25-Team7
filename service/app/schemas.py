@@ -1,6 +1,7 @@
 # app/schemas.py
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
+from datetime import datetime
 
 # handle pydantic v2 ConfigDict if available, otherwise fallback to v1 Config
 try:
@@ -78,4 +79,24 @@ class JDOut(BaseModel):
 
 class JDCount(BaseModel):
     count: int
+class CandidateBase(BaseModel):
+    user_id: int
+    jd_id: int
+
+    class Config:
+        orm_mode = True
+
+class CandidateOut(BaseModel):
+    id: int
+    jd_id: int
+    applied_at: datetime
+    user: UserOut  # include full user info
+
+    class Config:
+        orm_mode = True
+
+class CandidateListResponse(BaseModel):
+    success: bool
+    status_code: int
+    data: List[CandidateOut]
 

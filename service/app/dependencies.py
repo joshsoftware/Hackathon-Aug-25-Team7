@@ -12,7 +12,7 @@ async def get_current_user(
     return await auth.get_current_user(token, db)
 
 
-def require_roles(*allowed_roles: list[str]):
+def require_roles(*allowed_roles: str):
     """Factory function for role-based access"""
 
     async def role_checker(
