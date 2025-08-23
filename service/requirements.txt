@@ -1,6 +1,12 @@
-pipecat-ai[webrtc,silero,deepgram,openai,cartesia,runner]>=0.0.77
+fastapi
+uvicorn[standard]
+sqlalchemy[asyncio]
+asyncpg
+python-dotenv
+passlib[bcrypt]
+python-jose[cryptography]
+pydanticpipecat-ai[webrtc,silero,deepgram,openai,cartesia,runner]>=0.0.77
 anthropic
 loguru
-fastapi
 uvicorn
 pydantic
