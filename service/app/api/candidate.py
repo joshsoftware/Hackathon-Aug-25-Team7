@@ -5,6 +5,10 @@ from typing import List
 from app import crud, schemas
 from app.db.connection import get_db
 from app.dependencies import require_roles
+from app.models import Interview, InterviewStatus
+from app.schemas import ScheduleStatusRequest
+from sqlalchemy import select
+
 
 router = APIRouter(prefix="/api/candidates", tags=["Candidates"])
 
@@ -15,11 +19,10 @@ async def get_all_candidates(
     current_user: schemas.UserOut = Depends(require_roles("admin", "recruiter")),
 ):
     candidates = await crud.get_candidates(db)
-    return {
-        "success": True,
-        "status_code": status.HTTP_200_OK,
-        "data": candidates
-    }
+    # attach interview status
+    for c in candidates:
+        c.interview_status = c.interview.status.value if c.interview else "pending"
+    return {"success": True, "status_code": status.HTTP_200_OK, "data": candidates}
 
 # --- Get candidates for a specific job ID ---
 @router.get("/by-job", response_model=schemas.CandidateListResponse)
@@ -53,3 +56,34 @@ async def get_candidate(
             }
         )
     return candidate
+
+@router.post("/schedule-status", response_model=schemas.InterviewOut)
+async def schedule_interview_status(
+    payload: ScheduleStatusRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: schemas.UserOut = Depends(require_roles("admin", "recruiter"))
+):
+    candidate_id = payload.candidate_id
+
+    result = await db.execute(select(Interview).where(Interview.candidate_id == candidate_id))
+    interview = result.scalars().first()
+
+    if not interview:
+        jd_id = await db.scalar(select(Candidate.jd_id).where(Candidate.id == candidate_id))
+        interview = Interview(
+            candidate_id=candidate_id,
+            jd_id=jd_id,
+            status=InterviewStatus.scheduled
+        )
+        db.add(interview)
+        await db.commit()
+        await db.refresh(interview)
+        return interview
+
+    if interview.status == InterviewStatus.pending:
+        interview.status = InterviewStatus.scheduled
+        await db.commit()
+        await db.refresh(interview)
+
+    return interview
+
