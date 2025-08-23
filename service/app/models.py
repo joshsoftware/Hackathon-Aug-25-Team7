@@ -7,7 +7,7 @@ from sqlalchemy.dialects.postgresql import ENUM as PGEnum
 from sqlalchemy.orm import declarative_base, relationship
 import datetime
 from typing import List
-from app.schemas import JDOut
+from .schemas import JDOut
 from pydantic import BaseModel
 
 

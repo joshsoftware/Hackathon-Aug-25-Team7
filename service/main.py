@@ -1,8 +1,8 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
-from .db import connection
-from .models import Base
-from .api import auth, jd, candidate
+from app.db import connection
+from app.models import Base
+from app.api import auth, jd, candidate
 import asyncio
 from pydantic import BaseModel
 from starlette.responses import JSONResponse
@@ -53,7 +53,7 @@ async def create_connection(request: WebRTCConnectionRequest):
         
         # Import bot function - adjust import path as needed based on your project structure
         # You may need to modify this import if bot.py is in a different location
-        from bot import bot
+        from app.bot import bot
         from pipecat.runner.types import SmallWebRTCRunnerArguments
         
         # Create runner arguments with the connection

@@ -25,7 +25,7 @@ import os
 
 from dotenv import load_dotenv
 from loguru import logger
-from service.app.interview_prompts import get_interview_prompt
+from app.interview_prompts import get_interview_prompt
 
 print("🚀 Starting Pipecat bot...")
 print("⏳ Loading AI models (30-40 seconds first run, <2 seconds after)\n")
