@@ -91,6 +91,7 @@ class CandidateOut(BaseModel):
     jd_id: int
     applied_at: datetime
     user: UserOut  # include full user info
+    interview_status: str
 
     class Config:
         orm_mode = True
@@ -100,3 +101,25 @@ class CandidateListResponse(BaseModel):
     status_code: int
     data: List[CandidateOut]
 
+class InterviewBase(BaseModel):
+    candidate_id: int
+    jd_id: int
+    status: Optional[str] = "not-schedule"
+    start_time: Optional[datetime]
+    end_time: Optional[datetime]
+    interview_qa: Optional[str]
+
+class InterviewOut(InterviewBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+class ScheduleInterviewRequest(BaseModel):
+    candidate_id: int
+    start_time: datetime
+    end_time: datetime
+    interview_qa: Optional[str]
+
+class ScheduleStatusRequest(BaseModel):
+    candidate_id: int
