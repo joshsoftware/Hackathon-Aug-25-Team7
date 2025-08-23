@@ -9,6 +9,7 @@ import datetime
 from typing import List
 from app.schemas import JDOut
 from pydantic import BaseModel
+from sqlalchemy import event
 
 
 
@@ -96,3 +97,16 @@ class Interview(Base):
 
     candidate = relationship("Candidate", back_populates="interview")
 
+@event.listens_for(Candidate, "after_insert")
+def create_interview_after_candidate(mapper, connection, target):
+    """
+    Automatically create an Interview row with pending status
+    whenever a Candidate is added.
+    """
+    connection.execute(
+        Interview.__table__.insert().values(
+            candidate_id=target.id,
+            jd_id=target.jd_id,
+            status=InterviewStatus.pending.value  # use .value for enum
+        )
+    )
