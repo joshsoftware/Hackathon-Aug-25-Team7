@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { Separator } from "@/shared/components/ui/separator";
+import { Search } from "lucide-react";
+import { Input } from "@/shared/components/ui/input";
 import AppHeader from "@/shared/components/layout/AppHeader";
 import PageHeader from "../components/PageHeader";
-import CandidateListFilters from "../components/CandidateListFilters";
 import CandidateCard from "../components/CandidateCard";
 import CandidateListEmptyState from "../components/CandidateListEmptyState";
 import { mockCandidates, jobTitles } from "../data/mockData";
@@ -32,17 +33,10 @@ const CandidateListPage = () => {
     setSearchTerm(value);
   };
 
-  const handleFiltersClick = () => {
-    // TODO: Implement filters functionality
-    console.log("Filters clicked");
-  };
-
   const handleSchedule = (candidateId: string) => {
     // TODO: Implement schedule functionality
     console.log("Schedule clicked for candidate:", candidateId);
   };
-
-
 
   const handleSummary = (candidateId: string) => {
     navigate(`/interview-review/${candidateId}`);
@@ -58,12 +52,17 @@ const CandidateListPage = () => {
           onBack={handleBack}
         />
 
-        {/* Filters */}
-        <CandidateListFilters 
-          searchTerm={searchTerm}
-          onSearchChange={handleSearchChange}
-          onFiltersClick={handleFiltersClick}
-        />
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 pointer-events-none" />
+          <Input
+            type="text"
+            placeholder="Search candidates by name or skills..."
+            value={searchTerm}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-10 h-11 border-gray-200 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
 
         {/* Candidate List */}
         <div className="space-y-0">
