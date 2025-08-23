@@ -1,4 +1,4 @@
-import { createBrowserRouter, type RouteObject, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, type RouteObject, RouterProvider } from "react-router";
 import { type RouteOptions, routes } from "@/root/routes-config";
 import WithAuth from "@/shared/hoc/WithAuth";
 import { AppLayout } from "@/shared/lib/enum";
@@ -32,7 +32,9 @@ const getBrowserRouter = (routes: RouteOptions[]) => {
       <div className="p-8 text-center">
         <h1 className="text-2xl font-bold text-red-600">404 - Page Not Found</h1>
         <p className="mt-4 text-gray-600">The page you're looking for doesn't exist.</p>
-        <a href="/" className="mt-4 inline-block text-blue-600 hover:underline">Go back home</a>
+        <a href="/" className="mt-4 inline-block text-blue-600 hover:underline">
+          Go back home
+        </a>
       </div>
     ),
   });
@@ -44,7 +46,7 @@ const getBrowserRouter = (routes: RouteOptions[]) => {
 const Router = () => {
   const router = getBrowserRouter(routes);
   console.log("Router initialized with routes:", routes);
-  
+
   return <RouterProvider router={router} />;
 };
 
