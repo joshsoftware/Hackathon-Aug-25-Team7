@@ -32,6 +32,9 @@ async def get_candidates_by_job(
     current_user: schemas.UserOut = Depends(require_roles("admin", "recruiter")),
 ):
     candidates = await crud.get_candidates_by_jd(db, jd_id)
+    # Add interview status similar to get_all_candidates method
+    for c in candidates:
+        c.interview_status = c.interview.status.value if c.interview else "pending"
     return {
         "success": True,
         "status_code": status.HTTP_200_OK,
